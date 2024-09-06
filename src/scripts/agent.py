@@ -125,8 +125,8 @@ class Agent:
         self.node_manager.get_rarefied_graph(self.location, self.map_info)
         t2 = time.time()
         # print("graph rarefaction", t2 - t1)
-        self.node_coords, self.utility, self.guidepost, self.adjacent_matrix, self.current_index, self.neighbor_indices = \
-            self.update_observation()
+        # self.node_coords, self.utility, self.guidepost, self.adjacent_matrix, self.current_index, self.neighbor_indices = \
+        #     self.update_observation()
         t1 = time.time()
         self.key_node_coords, self.key_utility, self.key_guidepost, self.key_adjacent_matrix, self.key_current_index, self.key_neighbor_indices = \
             self.update_key_node_observation()

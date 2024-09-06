@@ -199,7 +199,11 @@ class Runner:
         next_location, next_node_index = self.robot.select_next_waypoint(observation)
 
         self.next_waypoint_list.append(next_location)
-        self.history_waypoint_list.append((next_location[0], next_location[1]))
+        if len(self.history_waypoint_list) > 0:
+            if (next_location[0], next_location[1]) != self.history_waypoint_list[-1]:
+                self.history_waypoint_list.append((next_location[0], next_location[1]))
+        else:
+            self.history_waypoint_list.append((next_location[0], next_location[1]))
 
         # planning one more step if next node's utility is zero
         if self.robot.node_manager.nodes_dict.find(next_location.tolist()).data.utility == 0:

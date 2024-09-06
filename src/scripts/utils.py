@@ -1,8 +1,4 @@
-import time
-
 import numpy as np
-import imageio
-import os
 from skimage.morphology import label
 import quads
 import parameter
@@ -149,14 +145,14 @@ def get_frontier_in_map(map_info):
     frontier_coords = get_coords_from_cell_position(frontier_cell, map_info).reshape(-1, 2)
     if frontier_cell.shape[0] > 0 and parameter.FRONTIER_CELL_SIZE != parameter.CELL_SIZE:
         frontier_coords = frontier_coords.reshape(-1, 2)
-        frontier_coords = frontier_down_sample(frontier_coords)
+        frontier_coords = frontier_down_sample(frontier_coords, parameter.FRONTIER_CELL_SIZE)
     else:
         frontier_coords = set(map(tuple, frontier_coords))
 
     return frontier_coords
 
 
-def frontier_down_sample(data, voxel_size=parameter.FRONTIER_CELL_SIZE):
+def frontier_down_sample(data, voxel_size):
     voxel_indices = np.array(data / voxel_size, dtype=int).reshape(-1, 2)
 
     voxel_dict = {}
