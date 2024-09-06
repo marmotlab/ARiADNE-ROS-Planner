@@ -29,7 +29,7 @@
     <param name="waypoint_threshold" value="1.0"/>
     <param name="next_waypoint_threshold" value="4.0"/>
     <param name="hard_update_threshold" value="10.0"/>
-    <param name="frontier_sample_factor" value="25.0"/>
+    <param name="frontier_cluster_range" value="15.0"/>
     <param name="replanning_frequency" value="2.5"/>
   </node>
 
