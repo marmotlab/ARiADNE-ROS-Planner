@@ -214,7 +214,7 @@ class Agent:
         edge_mask = torch.tensor(edge_mask).unsqueeze(0).to(self.device)
 
         current_in_edge = np.argwhere(current_edge == current_index)[0][0]
-        current_edge = torch.tensor(current_edge).unsqueeze(0)
+        current_edge = torch.tensor(current_edge).unsqueeze(0).to(self.device)
         k_size = current_edge.size()[-1]
         current_edge = current_edge.unsqueeze(-1)
 

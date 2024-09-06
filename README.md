@@ -2,7 +2,7 @@
 
 ARiADNE is **A** **R**e**i**nforcement learning apporach using **A**ttention-based **D**eep **N**etwork.
 It is designed to tackle Lidar-based autonomous single-robot exploration in 2D action space.
-ARiANDE builds an informative graph based on the partial exploration map as the input of the attention-based neural network.
+ARiADNE builds an informative graph based on the partial exploration map as the input of the attention-based neural network.
 The neural network trained by deep reinforcement learning will select one of the neighboring nodes as the next waypoint iteratively. 
 The robot will follow the planned waypoint to explore the environment.
 The planner is trained to estimate the long-term exploration efficiency of each potential waypoint and find a policy that can maximize the expectation of the predicted exploration efficiency.
@@ -63,8 +63,7 @@ roslaunch rl_planner rl_planner_forest.launch
 ```
 ### 4. Test in other environments
 As long as the starting coordination of the robot is $(0, 0)$, you should be able to run this code directly.
-However, to get better performance in different environments, you most likely need to tune some parameters in the launch file.
-Such as the node resolution, the frontier downsample factor, and maybe the replanning frequency.
+However, to get better performance in different environments, you most likely need to tune some parameters in the launch file, such as the node resolution, the frontier downsample factor, and maybe the replanning frequency.
 
 ### 5. Train your own networks
 You can train your own networks using [ARiADNE](https://github.com/marmotlab/ARiADNE) or its [ground truth critic variant](https://github.com/marmotlab/large-scale-DRL-exploration). To run the trained model, replace the checkpoint file under the model folder.
