@@ -1,6 +1,6 @@
 <launch>
 <arg name="base_frame" default="sensor"/>
-<arg name="sensor_range" default="20.0"/>
+<arg name="sensor_range" default="12.0"/>
 <arg name="map_resolution" default="0.4"/>
 <arg name="node_resolution" default="2.0"/>
 
@@ -10,7 +10,7 @@
     <param name="base_frame_id" value="$(arg base_frame)"/>
     <param name="resolution" value="$(arg map_resolution)"/>
     <param name="occupancy_min_z" type="double" value="0.0"/>
-    <param name="occupancy_max_z" type="double" value="1.2"/>
+    <param name="occupancy_max_z" type="double" value="0.7"/>
     <param name="sensor_model/max_range" value="$(arg sensor_range)" />
     <param name="sensor_model/hit" value="1"/>
     <param name="sensor_model/miss" value="0.45"/>
@@ -23,12 +23,12 @@
     <param name="node_resolution" value="$(arg node_resolution)"/>
     <param name="sensor_range" value="$(arg sensor_range)"/>
     <param name="utility_range_factor" value="0.5"/>
-    <param name="min_utility" type="int" value="3"/>
-    <param name="frontier_downsample_factor" value="1"/>
+    <param name="min_utility" type="int" value="2"/>
+    <param name="frontier_downsample_factor" value="2"/>
     <param name="map_resolution" value="$(arg map_resolution)"/>
-    <param name="waypoint_threshold" value="2.0"/>
+    <param name="waypoint_threshold" value="1.0"/>
     <param name="next_waypoint_threshold" value="4.0"/>
-    <param name="hard_update_threshold" value="10.0"/>
+    <param name="hard_update_threshold" value="12.0"/>
     <param name="frontier_cluster_range" value="10.0"/>
     <param name="replanning_frequency" value="2.5"/>
   </node>

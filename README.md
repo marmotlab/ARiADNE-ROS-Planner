@@ -16,6 +16,23 @@ This repo contains the source code for ARiADNE planner in ROS1.
 <img src="demo/example.jpg" width="480"/>
 </p>
 
+## Demo
+Here is a demo video showing ARiADNE planner exploring the indoor environment provided by [TARE](https://github.com/caochao39/tare_planner/tree/melodic-noetic). 
+The video is playing at the original speed.
+This experiment was conducted on an ASUS mini PC with an Intel i7-12700H CPU. 
+
+https://github.com/user-attachments/assets/e4aecdb2-9c6e-4803-996b-25efc4cae221
+
+In this demo, the robot traveled 948m in 545s when the exploration was completed. 
+The average planning time was 0.17s.
+The average waypoint publishing frequency was around 2.5Hz. 
+You can find the per-step record [here](demo/metrics.txt). 
+The final exploration trajectory is shown below.    
+
+<p align="center">
+<img src="demo/demo_indoor.png" width="640"/>
+</p>
+
 ## Usage
 ### 1. Prerequisites
 We tested this planner on Ubuntu 18.04 ROS [Melodic](https://wiki.ros.org/melodic/Installation) and Ubuntu 20.04 ROS [Noetic](http://wiki.ros.org/noetic/Installation).
@@ -64,26 +81,16 @@ roslaunch rl_planner rl_planner_forest.launch
 ### 4. Test in other environments
 As long as the starting coordination of the robot is $(0, 0)$, you should be able to run this code directly.
 However, to get better performance in different environments, you most likely need to tune some parameters in the launch file, such as the node resolution, the frontier downsample factor, and maybe the replanning frequency.
+Here are examples of applying ARiADNE planner in CMU forest and two indoor scenarios provided by [FAEL](https://github.com/SYSU-RoboticsLab/FAEL/tree/main).
+
+<div style="display: flex; justify-content: space-between;">
+<img src="demo/forest.jpg" width="200">
+<img src="demo/fael_scenario3.jpg" width="200">
+<img src="demo/fael_scenario4.jpg" width="200">
+</div>
 
 ### 5. Train your own networks
 You can train your own networks using [ARiADNE](https://github.com/marmotlab/ARiADNE) or its [ground truth critic variant](https://github.com/marmotlab/large-scale-DRL-exploration). To run the trained model, replace the checkpoint file under the model folder.
-
-## Demo
-Here is a demo video showing ARiADNE planner exploring the indoor environment. 
-The video is playing at the original speed.
-This experiment was conducted on an ASUS mini PC with an Intel i7-12700H CPU. 
-
-https://github.com/user-attachments/assets/e4aecdb2-9c6e-4803-996b-25efc4cae221
-
-In this demo, the robot traveled 948m in 545s when the exploration was completed. 
-The average planning time was 0.17s.
-The average waypoint publishing frequency was around 2.5Hz. 
-You can find the per-step record [here](demo/metrics.txt). 
-The final exploration trajectory is shown below.    
-
-<p align="center">
-<img src="demo/demo_indoor.png" width="640"/>
-</p>
 
 ## Citation
 If you find our work helpful or enlightening, feel free to cite our paper:

@@ -70,6 +70,8 @@ class NodeManager:
                 elif np.linalg.norm(
                         node.coords - robot_location) > parameter.THR_GRAPH_HARD_UPDATE and node.utility == 0:
                     pass
+                elif np.linalg.norm(node.coords - robot_location) < parameter.THR_GRAPH_HARD_UPDATE and node.utility > 0:
+                    node.initialize_observable_frontiers(frontiers, updating_map_info)
                 else:
                     node.update_node_observable_frontiers(frontiers, updating_map_info, map_info, global_frontiers)
             all_node_list.append(node)

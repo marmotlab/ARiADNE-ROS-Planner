@@ -148,14 +148,13 @@ class Runner:
 
         # check and solve oscillation between two waypoints
         if parameter.AVOID_OSCILLATION and len(self.history_waypoint_list) > 4:
-            if self.history_waypoint_list[-1] != self.history_waypoint_list[-2]:
-                if self.history_waypoint_list[-1] == self.history_waypoint_list[-3] and self.history_waypoint_list[-2] == self.history_waypoint_list[-4]:
-                    self.next_waypoint_list = []
-                    rospy.logdebug("Waypoint oscillation detected")
-                    if np.linalg.norm(self.next_way_point - self.robot_location) > parameter.THR_TO_WAYPOINT:
-                        return
-                    else:
-                        rospy.logdebug("Waypoint oscillation solved")
+            if self.history_waypoint_list[-1] == self.history_waypoint_list[-3] and self.history_waypoint_list[-2] == self.history_waypoint_list[-4]:
+                self.next_waypoint_list = []
+                rospy.logdebug("Waypoint oscillation detected")
+                if np.linalg.norm(self.next_way_point - self.robot_location) > parameter.THR_TO_WAYPOINT:
+                    return
+                else:
+                    rospy.logdebug("Waypoint oscillation solved")
 
         # if planned one more step, use it
         if len(self.next_waypoint_list) > 0:

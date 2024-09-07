@@ -24,7 +24,7 @@
     <param name="sensor_range" value="$(arg sensor_range)"/>
     <param name="utility_range_factor" value="0.5"/>
     <param name="min_utility" type="int" value="3"/>
-    <param name="frontier_downsample_factor" type="int" value="2"/>
+    <param name="frontier_downsample_factor" value="2"/>
     <param name="map_resolution" value="$(arg map_resolution)"/>
     <param name="waypoint_threshold" value="1.0"/>
     <param name="next_waypoint_threshold" value="4.0"/>
