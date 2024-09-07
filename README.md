@@ -83,11 +83,11 @@ As long as the starting coordination of the robot is $(0, 0)$, you should be abl
 However, to get better performance in different environments, you most likely need to tune some parameters in the launch file, such as the node resolution, the frontier downsample factor, and maybe the replanning frequency.
 Here are examples of applying ARiADNE planner in CMU forest and two indoor scenarios provided by [FAEL](https://github.com/SYSU-RoboticsLab/FAEL/tree/main).
 
-<div style="display: flex; justify-content: space-between;">
-<img src="demo/forest.jpg" width="200">
-<img src="demo/fael_scenario3.jpg" width="200">
-<img src="demo/fael_scenario4.jpg" width="200">
-</div>
+<p align="center">
+<img src="demo/forest.jpg" width="240" align="left">
+<img src="demo/fael_scenario3.jpg" width="240">
+<img src="demo/fael_scenario4.jpg" width="240" align="right">
+</p>
 
 ### 5. Train your own networks
 You can train your own networks using [ARiADNE](https://github.com/marmotlab/ARiADNE) or its [ground truth critic variant](https://github.com/marmotlab/large-scale-DRL-exploration). To run the trained model, replace the checkpoint file under the model folder.
