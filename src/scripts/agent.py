@@ -117,7 +117,7 @@ class Agent:
         self.update_location(location)
         self.update_updating_map(self.location)
         self.update_frontiers()
-        self.node_manager.update_graph(self.location,
+        self.location = self.node_manager.update_graph(self.location,
                                        self.frontier,
                                        self.updating_map_info,
                                        self.map_info)
@@ -179,8 +179,6 @@ class Agent:
             for neighbor in node.neighbor_set:
                 neighbor = np.array([neighbor[0], neighbor[1]])
                 index = np.argwhere(node_coords_to_check == neighbor[0] + neighbor[1] * 1j)
-                # print(index, neighbor, all_key_node_coords)
-                # assert index != []
                 index = index[0][0]
                 adjacent_matrix[i, index] = 0
 

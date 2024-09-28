@@ -30,6 +30,8 @@
     <param name="next_waypoint_threshold" value="4.0"/>
     <param name="hard_update_threshold" value="10.0"/>
     <param name="frontier_cluster_range" value="15.0"/>
+    <param name="enable_save_mode" value="true"/>
+    <param name="enable_dstarlite" value="true"/>
     <param name="replanning_frequency" value="1"/>
   </node>
 

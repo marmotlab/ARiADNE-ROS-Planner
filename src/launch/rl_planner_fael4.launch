@@ -1,6 +1,6 @@
 <launch>
 <arg name="base_frame" default="sensor"/>
-<arg name="sensor_range" default="12.0"/>
+<arg name="sensor_range" default="16.0"/>
 <arg name="map_resolution" default="0.4"/>
 <arg name="node_resolution" default="2.0"/>
 
@@ -30,7 +30,9 @@
     <param name="next_waypoint_threshold" value="4.0"/>
     <param name="hard_update_threshold" value="12.0"/>
     <param name="frontier_cluster_range" value="10.0"/>
-    <param name="replanning_frequency" value="1.5"/>
+    <param name="enable_save_mode" value="true"/>
+    <param name="enable_dstarlite" value="true"/>
+    <param name="replanning_frequency" value="2.5"/>
   </node>
 
   <node pkg="tf" type="static_transform_publisher" name="link_broadcaster" args="0 0 0 0 0 0 1 vehicle base_link 100" />

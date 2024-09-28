@@ -33,6 +33,10 @@ The final exploration trajectory is shown below.
 <img src="demo/demo_indoor.png" width="640"/>
 </p>
 
+The largest environment we tested is the tunnel environment as below:
+
+https://github.com/user-attachments/assets/6d4465eb-38fb-4fb5-943d-4e9a9953c75a
+
 ## Usage
 ### 1. Prerequisites
 We tested this planner on Ubuntu 18.04 ROS [Melodic](https://wiki.ros.org/melodic/Installation) and Ubuntu 20.04 ROS [Noetic](http://wiki.ros.org/noetic/Installation).
@@ -67,7 +71,7 @@ To run the development environment, go to the development environment folder in 
 source devel/setup.bash 
 roslaunch vehicle_simulator system_indoor.launch
 ```
-Our planner can work in two of their environments: indoor and forest.
+Our planner can work in three of their environments: indoor, forest, and tunnel.
 
 To run ARiADNE planner, go to the planner folder in another terminal (launch your conda environment if any) and run:
 ```
@@ -78,15 +82,21 @@ if running the planner in the forest environment, run:
 ```
 roslaunch rl_planner rl_planner_forest.launch
 ```
+if running the planner in the tunnel environment, run:
+```
+roslaunch rl_planner rl_planner_tunnel.launch
+```
 ### 4. Test in other environments
 As long as the starting coordination of the robot is $(0, 0)$, you should be able to run this code directly.
 However, to get better performance in different environments, you most likely need to tune some parameters in the launch file, such as the node resolution, the frontier downsample factor, and maybe the replanning frequency.
-Here are examples of applying ARiADNE planner in CMU forest and two indoor scenarios provided by [FAEL](https://github.com/SYSU-RoboticsLab/FAEL/tree/main).
+Some brief introduction of these parameters can be found in ``parameter.py.``
+Here are examples of applying ARiADNE planner in CMU forest and tunnel and two indoor scenarios provided by [FAEL](https://github.com/SYSU-RoboticsLab/FAEL/tree/main).
 
 <p align="center">
-<img src="demo/forest.jpg" width="280" align="left">
-<img src="demo/fael_scenario3.jpg" width="280">
-<img src="demo/fael_scenario4.jpg" width="280" align="right">
+<img src="demo/forest.jpg" width="240" align="left"><img src="demo/fael_scenario3.jpg" width="240"><img src="demo/fael_scenario4.jpg" width="240" align="right">
+</p>
+<p align="center">
+<img src="demo/tunnel.jpg" width="560" />
 </p>
 
 ### 5. Train your own networks

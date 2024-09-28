@@ -52,6 +52,8 @@ class Runner:
         # replanning related
         parameter.THR_TO_WAYPOINT = rospy.get_param('~waypoint_threshold', parameter.THR_TO_WAYPOINT)
         parameter.AVOID_OSCILLATION = rospy.get_param('~avoid_waypoint_oscillation', parameter.AVOID_OSCILLATION)
+        parameter.ENABLE_SAVE_MODE = rospy.get_param('~enable_save_mode', parameter.ENABLE_SAVE_MODE)
+        parameter.ENABLE_DSTARLITE = rospy.get_param('~enable_dstarlite', parameter.ENABLE_DSTARLITE)
         frequency = rospy.get_param('~replanning_frequency', 2.5)
 
         # network model file
@@ -70,17 +72,20 @@ class Runner:
         # waypoint
         self.next_waypoint_list = []
         self.history_waypoint_list = []
-        self.next_way_point = None
+        self.next_waypoint = None
 
         # termination status
         self.done = False
+
+        # save mode
+        self.save_mode = False
 
         # subscribers
         rospy.Subscriber('/projected_map', OccupancyGrid, self.get_map_callback, queue_size=1)
         rospy.Subscriber('/state_estimation', Odometry, self.get_loc_callback, queue_size=1)
 
         # publishers
-        self.way_point_pub = rospy.Publisher('/way_point', PointStamped, queue_size=1)
+        self.waypoint_pub = rospy.Publisher('/way_point', PointStamped, queue_size=1)
         self.run_time_pub = rospy.Publisher('/runtime', Float32, queue_size=1)
         self.edge_pub = rospy.Publisher('/edge', Marker, queue_size=1)
         self.node_pub = rospy.Publisher('/node', PointCloud2, queue_size=1)
@@ -143,28 +148,52 @@ class Runner:
 
     def run(self, event=None):
         # no more planning if exploration is completed
+        t1 = time.time()
         if self.done:
              return
+
+        if self.save_mode:
+            if np.linalg.norm(self.next_waypoint - self.robot_location) > parameter.THR_TO_WAYPOINT:
+                return
+            else:
+                if len(self.next_waypoint_list) > 0:
+                    next_waypoint = self.next_waypoint_list.pop(0)
+                    while check_collision(self.robot_location, np.array(next_waypoint), self.map_info) is False\
+                            and np.linalg.norm(self.robot_location - np.array(next_waypoint)) < (parameter.THR_NEXT_WAYPOINT + parameter.NODE_RESOLUTION)\
+                            and len(self.next_waypoint_list) > 0:
+                        next_waypoint = self.next_waypoint_list.pop(0)
+                    self.next_waypoint = next_waypoint
+
+                    self.history_waypoint_list.append((self.next_waypoint[0], self.next_waypoint[1]))
+                    waypoint_msg = self.waypoint_wrapper(self.next_waypoint)
+                    self.waypoint_pub.publish(waypoint_msg)
+                    run_time = Float32()
+                    run_time.data = time.time() - t1
+
+                    # publish
+                    self.run_time_pub.publish(run_time)
+                    return
+                else:
+                    self.save_mode = False
+                    rospy.logwarn("Switch back to RL")
+
 
         # check and solve oscillation between two waypoints
         if parameter.AVOID_OSCILLATION and len(self.history_waypoint_list) > 4:
             if self.history_waypoint_list[-1] == self.history_waypoint_list[-3] and self.history_waypoint_list[-2] == self.history_waypoint_list[-4]:
                 self.next_waypoint_list = []
-                rospy.logdebug("Waypoint oscillation detected")
-                if np.linalg.norm(self.next_way_point - self.robot_location) > parameter.THR_TO_WAYPOINT:
+                if np.linalg.norm(self.next_waypoint - self.robot_location) > parameter.THR_TO_WAYPOINT:
                     return
-                else:
-                    rospy.logdebug("Waypoint oscillation solved")
 
         # if planned one more step, use it
         if len(self.next_waypoint_list) > 0:
-            if np.linalg.norm(self.next_way_point - self.robot_location) > parameter.THR_TO_WAYPOINT:
+            if np.linalg.norm(self.next_waypoint - self.robot_location) > parameter.THR_TO_WAYPOINT:
                 pass
             else:
-                self.robot_location = self.next_way_point
-                self.next_way_point = self.next_waypoint_list.pop(0)
-                way_point_msg = self.waypoint_wrapper(self.next_way_point)
-                self.way_point_pub.publish(way_point_msg)
+                self.robot_location = self.next_waypoint
+                self.next_waypoint = self.next_waypoint_list.pop(0)
+                waypoint_msg = self.waypoint_wrapper(self.next_waypoint)
+                self.waypoint_pub.publish(waypoint_msg)
         self.next_waypoint_list = []
         # print("robot location at", self.robot_location)
 
@@ -178,7 +207,6 @@ class Runner:
             node_coords = nearest_node.data.coords
             robot_node_location = node_coords
 
-        t1 = time.time()
         # updating planning graph
         self.robot.update_planning_state(self.map_info, robot_node_location)
 
@@ -188,6 +216,10 @@ class Runner:
             n= "\033[0m"
             rospy.loginfo(f"{g}Exploration Completed{n}")
             self.done = True
+            run_time = Float32()
+            run_time.data = 0
+            self.run_time_pub.publish(run_time)
+            return
 
         # get rl observation
         t2 = time.time()
@@ -221,24 +253,54 @@ class Runner:
         # print("prepare tensor input using {}".format(t3 - t2))
         # print("neural network inference using {}".format(t4-t3))
 
+        # if rl gets stuck, go to nearest frontier
+        if parameter.ENABLE_SAVE_MODE:
+            if self.detect_waypoint_loop():
+                self.next_waypoint_list = self.robot.node_manager.path_to_nearest_frontier
+                self.save_mode = True
+                rospy.logwarn("Switch to save mode")
+
         # get waypoint message
-        self.next_way_point = self.next_waypoint_list.pop(0)
-        way_point_msg = self.waypoint_wrapper(self.next_way_point)
+        self.next_waypoint = self.next_waypoint_list.pop(0)
+        waypoint_msg = self.waypoint_wrapper(self.next_waypoint)
 
         # get planning time message
         run_time = Float32()
-        if not self.done:
-            run_time.data = t4 - t1
-        else:
-            run_time.data = 0
+        run_time.data = t4 - t1
 
         # publish
         self.run_time_pub.publish(run_time)
-        self.way_point_pub.publish(way_point_msg)
+        self.waypoint_pub.publish(waypoint_msg)
 
         self.step += 1
         if self.publish_graph:
             self.visualize_graph()
+
+    def detect_waypoint_loop(self, max_length=6):
+        if len(self.history_waypoint_list) < max_length:
+            return False
+
+        waypoint_list_to_check = self.history_waypoint_list[-max_length:]
+        loop =[]
+        for i, waypoint in enumerate(waypoint_list_to_check[:-1]):
+            if waypoint == waypoint_list_to_check[-1]:
+                loop = waypoint_list_to_check[i:]
+
+        if loop:
+            loop_length = len(loop)
+            if len(self.history_waypoint_list) < 2 * loop_length + 1:
+                return False
+            waypoint_list_to_check2 = self.history_waypoint_list[-max_length-loop_length+1:-loop_length+1]
+            # print("length check", waypoint_list_to_check2, loop)
+            loop2 = []
+            for i, waypoint in enumerate(waypoint_list_to_check2[:-1]):
+                if waypoint == waypoint_list_to_check2[-1]:
+                    loop2 = waypoint_list_to_check2[i:]
+                    break
+            if loop2:
+                return True
+            else:
+                return False
 
     def visualize_graph(self):
         # visualize edges
