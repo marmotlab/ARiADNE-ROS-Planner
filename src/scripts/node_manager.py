@@ -635,7 +635,7 @@ class Node:
                             self.neighbor_matrix[i, j] = 0
                             if (neighbor_coords[0], neighbor_coords[1]) in self.neighbor_set:
                                 self.neighbor_set.remove((neighbor_coords[0], neighbor_coords[1]))
-                            neighbor_node.neighbor_matrix[neighbor_matrix_x, neighbor_matrix_y] = 1
+                            neighbor_node.neighbor_matrix[neighbor_matrix_x, neighbor_matrix_y] = 0
                             if (self.coords[0], self.coords[1]) in neighbor_node.neighbor_set:
                                 neighbor_node.neighbor_set.remove((self.coords[0], self.coords[1]))
                         else:
@@ -837,14 +837,6 @@ class DStarLite:
                     if g < best_g:
                         best_g = g
                         best_neighbor = neighbor_coords
-
-            # if self.g[best_neighbor] != self.rhs[best_neighbor]:
-            #     self.fix_unconverged_path(best_neighbor)
-            #     path = []
-            #     current = self.start
-            #     current_node = self.nodes_dict.find(current).data
-            #     dist = 0
-            #     continue
 
             if len(path) >=2:
                 if best_neighbor == path[-2]:
