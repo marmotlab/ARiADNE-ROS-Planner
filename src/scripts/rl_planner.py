@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import warnings
-
 warnings.simplefilter("ignore", UserWarning)
+
 import rospy
 import rospkg
 import numpy as np
@@ -18,6 +18,7 @@ from sensor_msgs.msg import PointCloud2, PointField
 from sensor_msgs import point_cloud2
 from agent import Agent
 from model import PolicyNet
+from node_manager import NodeManager
 from utils import *
 import parameter
 
@@ -68,6 +69,7 @@ class Runner:
         # initialize robot planner
         self.robot = None
         self.init_agent()
+        self.start = None
 
         # waypoint
         self.next_waypoint_list = []
@@ -128,6 +130,13 @@ class Runner:
         if self.map_info is None:
             return
         self.robot_location = np.around(np.array([msg.pose.pose.position.x, msg.pose.pose.position.y]), 1)
+        if self.start is None:
+            self.start = np.array([0, 0])
+            self.start[0] = (self.robot_location[0] // parameter.NODE_RESOLUTION) * parameter.NODE_RESOLUTION
+            self.start[1] = (self.robot_location[1] // parameter.NODE_RESOLUTION) * parameter.NODE_RESOLUTION
+            self.robot.node_manager = NodeManager(self.start)
+            print("initialize quad tree at", self.start)
+            print("initialize robot location at", self.robot_location)
         self.robot_cell = get_cell_position_from_coords(self.robot_location, self.map_info)
 
     def waypoint_wrapper(self, loc):
@@ -202,7 +211,7 @@ class Runner:
 
         # find nearest node to the robot
         robot_node_location = self.robot_location
-        if self.robot_location[0] != 0 or self.robot_location[1] != 0:
+        if self.robot_location[0] != self.start[0] or self.robot_location[1] != self.start[1]:
             nearest_node = self.robot.node_manager.nodes_dict.nearest_neighbors(self.robot_location.tolist(), 1)[0]
             node_coords = nearest_node.data.coords
             robot_node_location = node_coords

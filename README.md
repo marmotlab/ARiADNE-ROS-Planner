@@ -16,6 +16,8 @@ This repo contains the source code for ARiADNE planner in ROS1.
 <img src="demo/example.jpg" width="480"/>
 </p>
 
+**5 Jan 2025**: support random starting location.
+
 ## Demo
 Here is a demo video showing ARiADNE planner exploring the indoor environment provided by [TARE](https://github.com/caochao39/tare_planner/tree/melodic-noetic). 
 The video is playing at the original speed.
@@ -87,7 +89,7 @@ if running the planner in the tunnel environment, run:
 roslaunch rl_planner rl_planner_tunnel.launch
 ```
 ### 4. Test in other environments
-As long as the starting coordination of the robot is $(0, 0)$, you should be able to run this code directly.
+~~As long as the starting coordination of the robot is $(0, 0)$,~~ you should be able to run this code directly.
 However, to get better performance in different environments, you most likely need to tune some parameters in the launch file, such as the node resolution, the frontier downsample factor, and maybe the replanning frequency.
 Some brief introduction of these parameters can be found in ``parameter.py.``
 Here are examples of applying ARiADNE planner in CMU forest and tunnel and two indoor scenarios provided by [FAEL](https://github.com/SYSU-RoboticsLab/FAEL/tree/main).

@@ -2,6 +2,9 @@ import time
 import rospy
 import heapq
 from copy import deepcopy
+
+from torch.fx.proxy import orig_method_name
+
 import parameter
 import math
 import numpy as np
@@ -10,13 +13,16 @@ import quads
 
 
 class NodeManager:
-    def __init__(self):
+    def __init__(self, start=np.array([0,0])):
         # use quad tree to index nodes in the original graph
-        self.nodes_dict = quads.QuadTree((0, 0), 1000, 1000)
+        self.nodes_dict = quads.QuadTree((start[0], start[1]), 1000, 1000)
+        self.add_node_to_dict(start, [], None)
         # use dictionary to index nodes in the rarefied graph
         self.key_node_dict = {}
         # use dictionary to index cluster center node
         self.cluster_center_node_dict = {}
+        # quad tree is initialized at
+        self.start = start
 
         # dstar-lite related
         self.new_nodes = set()
@@ -27,7 +33,7 @@ class NodeManager:
         self.path_to_nearest_frontier = None
         self.dist_to_nearest_frontier = 1e8
 
-        self.last = np.array([0, 0])
+        self.last = start
 
 
     def check_node_exist_in_dict(self, coords):
@@ -105,7 +111,7 @@ class NodeManager:
         # print("update edges", t3 - t2)
 
         # remove nodes unconnected to the origin
-        self.remove_unconnected_nodes(np.array([0, 0]))
+        self.remove_unconnected_nodes(self.start)
         t4 = time.time()
 
         redundant_nodes = self.new_nodes & self.removed_nodes
