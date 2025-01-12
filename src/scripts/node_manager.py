@@ -15,7 +15,7 @@ import quads
 class NodeManager:
     def __init__(self, start=np.array([0,0])):
         # use quad tree to index nodes in the original graph
-        self.nodes_dict = quads.QuadTree((start[0], start[1]), 1000, 1000)
+        self.nodes_dict = quads.QuadTree((0,0), 1000, 1000)
         self.add_node_to_dict(start, [], None)
         # use dictionary to index nodes in the rarefied graph
         self.key_node_dict = {}

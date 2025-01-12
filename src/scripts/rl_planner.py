@@ -131,9 +131,22 @@ class Runner:
             return
         self.robot_location = np.around(np.array([msg.pose.pose.position.x, msg.pose.pose.position.y]), 1)
         if self.start is None:
-            self.start = np.array([0, 0])
-            self.start[0] = (self.robot_location[0] // parameter.NODE_RESOLUTION) * parameter.NODE_RESOLUTION
-            self.start[1] = (self.robot_location[1] // parameter.NODE_RESOLUTION) * parameter.NODE_RESOLUTION
+
+            x = np.array([(self.robot_location[0] // parameter.NODE_RESOLUTION) * parameter.NODE_RESOLUTION, (self.robot_location[0] // parameter.NODE_RESOLUTION + 1) * parameter.NODE_RESOLUTION])
+            y = np.array([(self.robot_location[1] // parameter.NODE_RESOLUTION) * parameter.NODE_RESOLUTION, (self.robot_location[1] // parameter.NODE_RESOLUTION + 1) * parameter.NODE_RESOLUTION])
+            t1, t2 = np.meshgrid(x, y)
+            candidate_starts = np.vstack([t1.T.ravel(), t2.T.ravel()]).T
+            dis_robot = np.linalg.norm(candidate_starts - self.robot_location, axis=1)
+            sorted_candidate_starts = candidate_starts[np.argsort(dis_robot)]
+
+            for start in sorted_candidate_starts:
+                if is_free(start, self.map_info):
+                    self.start = start
+                    break
+
+            assert self.start is not None, rospy.logwarn("can not find valid start point")
+
+            self.start = np.around(self.start, 1)
             self.robot.node_manager = NodeManager(self.start)
             print("initialize quad tree at", self.start)
             print("initialize robot location at", self.robot_location)
