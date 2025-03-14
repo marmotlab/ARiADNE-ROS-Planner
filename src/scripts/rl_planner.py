@@ -225,7 +225,7 @@ class Runner:
         # find nearest node to the robot
         robot_node_location = self.robot_location
         if self.robot_location[0] != self.start[0] or self.robot_location[1] != self.start[1]:
-            if self.robot.node_manager.nodes_dict.__len()__ == 0:
+            if self.robot.node_manager.nodes_dict.__len__() == 0:
                 robot_node_location = self.start
             else:
                 nearest_node = self.robot.node_manager.nodes_dict.nearest_neighbors(self.robot_location.tolist(), 1)[0]
