@@ -72,13 +72,13 @@ Please follow instructions for [CMU Development Environment](https://www.cmu-exp
 To run the development environment, go to the development environment folder in a terminal and run:
 ```
 source install/setup.bash
-roslaunch vehicle_simulator system_indoor.launch
+ros2 launch vehicle_simulator system_indoor.launch
 ```
 Our planner can work in three of their environments: indoor, forest, and tunnel.
 
 To run ARiADNE planner, go to the planner folder in another terminal (launch your conda environment if any) and run:
 ```
-source devel/setup.bash 
+source install/setup.bash
 ros2 launch rl_planner rl_planner.launch.py 
 ```
 This launch file is for the indoor environment. For other environments, please update the parameters followed our ROS1 examples.
