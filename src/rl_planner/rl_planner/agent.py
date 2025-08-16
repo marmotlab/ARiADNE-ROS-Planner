@@ -6,11 +6,11 @@ import torch
 import matplotlib.pyplot as plt
 import copy
 import matplotlib.colors as colors
-import parameter
+from . import parameter
 
-from utils import *
+from .utils import *
 # from parameter import *
-from node_manager import NodeManager
+from .node_manager import NodeManager
 
 
 class Agent:

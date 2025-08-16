@@ -1,7 +1,7 @@
 import numpy as np
 from skimage.morphology import label
-import quads
-import parameter
+from . import quads
+from . import parameter
 
 def get_cell_position_from_coords(coords, map_info, check_negative=True):
     single_cell = False

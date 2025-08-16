@@ -1,15 +1,14 @@
 import time
-import rospy
 import heapq
 from copy import deepcopy
 
 from torch.fx.proxy import orig_method_name
 
-import parameter
+from . import parameter
 import math
 import numpy as np
-from utils import *
-import quads
+from .utils import *
+from . import quads
 
 
 class NodeManager:
@@ -123,7 +122,6 @@ class NodeManager:
             self.last = robot_location
             return robot_location
         else:
-            rospy.loginfo("The current node should be removed.")
             nearest_node = self.nodes_dict.nearest_neighbors(robot_location.tolist(), 1)[0].data
             self.last = nearest_node.coords
             return nearest_node.coords
@@ -302,7 +300,7 @@ class NodeManager:
                     dstar.first_run = False
                 path, dist = dstar.get_shortest_path()
                 if dist == 1e8:
-                    rospy.logdebug("Dstarlite exceed time limit")  # it is OK because most likely this node is too far, we can keep search it
+                    pass
             else:
                 path, dist = self.a_star(robot_location, center_node.coords)
 
