@@ -56,7 +56,7 @@ pip install -U colcon-common-extensions
 ```
 Then you can download this repo and compile it in the conda environment.
 ```
-git clone https://github.com/marmotlab/ARiADNE-ROS-Planner.git
+git clone https://github.com/marmotlab/ARiADNE-ROS-Planner.git -b humble
 cd ARiADNE-ROS-Planner
 python -m colcon build
 ```
