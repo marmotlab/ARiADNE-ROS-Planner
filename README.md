@@ -10,11 +10,13 @@ The informative graph can be rarefied to make it applicable in relatively larger
 
 If you are interested in more details, please check our related publications in [ICRA2023](https://arxiv.org/pdf/2301.11575) and [RAL](https://arxiv.org/pdf/2403.10833).
 
-This repo contains the source code for ARiADNE planner in ROS1. 
+This repo contains the source code for ARiADNE planner in ROS1 and [ROS2](https://github.com/marmotlab/ARiADNE-ROS-Planner/tree/humble)
 
 <p align="center">
 <img src="demo/example.jpg" width="480"/>
 </p>
+
+**16 Aug 2025**: support ROS2 Humble.
 
 **5 Jan 2025**: support random starting location.
 
