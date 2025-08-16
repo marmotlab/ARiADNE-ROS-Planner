@@ -10,13 +10,11 @@ The informative graph can be rarefied to make it applicable in relatively larger
 
 If you are interested in more details, please check our related publications in [ICRA2023](https://arxiv.org/pdf/2301.11575) and [RAL](https://arxiv.org/pdf/2403.10833).
 
-This repo contains the source code for ARiADNE planner in ROS1. 
+This branch contains the source code for ARiADNE planner in ROS2. 
 
 <p align="center">
 <img src="demo/example.jpg" width="480"/>
 </p>
-
-**5 Jan 2025**: support random starting location.
 
 ## Demo
 Here is a demo video showing ARiADNE planner exploring the indoor environment provided by [TARE](https://github.com/caochao39/tare_planner/tree/melodic-noetic). 
@@ -41,23 +39,26 @@ https://github.com/user-attachments/assets/6d4465eb-38fb-4fb5-943d-4e9a9953c75a
 
 ## Usage
 ### 1. Prerequisites
-We tested this planner on Ubuntu 18.04 ROS [Melodic](https://wiki.ros.org/melodic/Installation) and Ubuntu 20.04 ROS [Noetic](http://wiki.ros.org/noetic/Installation).
+We tested this planner on Ubuntu 22.04 ROS [Humble](https://wiki.ros.org/humble/Installation).
 In particular, our planner relies on [Octomap](https://octomap.github.io/) to transfer pointcloud to occupancy grid map:
 ```
-sudo apt-get install ros-noetic-octomap
+sudo apt-get install ros-humble-octomap-server
 ```
 We recommend to use [conda](https://conda.io/projects/conda/en/latest/user-guide/install/linux.html#) for package management. 
-Our planner is coded in Python and based on [Pytorch](https://pytorch.org/get-started/locally/).
-Other than Pytorch, please install following packages by:
+It is not very easy to use conda with ROS2 but somehow we make it work (will be easier to use the system Python though):
 ```
-pip install scikit-image matplotlib
+conda create -n ros2-torch python=3.10.12
+conda activate ros2-torch
+pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
+pip install scikit-image 
+pip install rospkg
+pip install -U colcon-common-extensions
 ```
-We tested our planner in various version of these packages so you can just install the latest one.
-Then you can download this repo and compile it.
+Then you can download this repo and compile it in the conda environment.
 ```
 git clone https://github.com/marmotlab/ARiADNE-ROS-Planner.git
 cd ARiADNE-ROS-Planner
-catkin_make
+python -m colcon build
 ```
 **Note:** We only use CPU to do the network inference, so you do not need a GPU.
 
@@ -70,7 +71,7 @@ Please follow instructions for [CMU Development Environment](https://www.cmu-exp
 ### 3. Run the code
 To run the development environment, go to the development environment folder in a terminal and run:
 ```
-source devel/setup.bash 
+source install/setup.bash
 roslaunch vehicle_simulator system_indoor.launch
 ```
 Our planner can work in three of their environments: indoor, forest, and tunnel.
@@ -78,19 +79,12 @@ Our planner can work in three of their environments: indoor, forest, and tunnel.
 To run ARiADNE planner, go to the planner folder in another terminal (launch your conda environment if any) and run:
 ```
 source devel/setup.bash 
-roslaunch rl_planner rl_planner.launch
+ros2 launch rl_planner rl_planner.launch.py 
 ```
-if running the planner in the forest environment, run:
-```
-roslaunch rl_planner rl_planner_forest.launch
-```
-if running the planner in the tunnel environment, run:
-```
-roslaunch rl_planner rl_planner_tunnel.launch
-```
+This launch file is for the indoor environment. For other environments, please update the parameters followed our ROS1 examples.
+
 ### 4. Test in other environments
-~~As long as the starting coordination of the robot is $(0, 0)$,~~ you should be able to run this code directly.
-However, to get better performance in different environments, you most likely need to tune some parameters in the launch file, such as the node resolution, the frontier downsample factor, and maybe the replanning frequency.
+To get better performance in different environments, you most likely need to tune some parameters in the launch file, such as the node resolution, the frontier downsample factor, and maybe the replanning frequency.
 Some brief introduction of these parameters can be found in ``parameter.py.``
 Here are examples of applying ARiADNE planner in CMU forest and tunnel and two indoor scenarios provided by [FAEL](https://github.com/SYSU-RoboticsLab/FAEL/tree/main).
 
@@ -130,11 +124,10 @@ If you find our work helpful or enlightening, feel free to cite our paper:
 
 ## Author
 [Yuhong Cao](https://www.yuhongcao.online)
-
-**Note:** I am seeking to implement this planner in C++. 
-Feel free to contact me if you are interested in collaboration.
+Chenyu He
 
 ## Credit
+
 [Development environment](https://www.cmu-exploration.com/development-environment) is from CMU.
 
 [Octomap](https://octomap.github.io/) is from University of Freiburg.
